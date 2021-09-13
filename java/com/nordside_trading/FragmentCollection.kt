@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -47,7 +48,22 @@ class FragmentCollection:Fragment() {
                     ,ItemCollection(UUID.randomUUID(),"3 collection")
                     ,ItemCollection(UUID.randomUUID(),"4 collection")
                     ,ItemCollection(UUID.randomUUID(),"5 collection")
-                    ,ItemCollection(UUID.randomUUID(),"6 collection"))
+                    ,ItemCollection(UUID.randomUUID(),"6 collection")
+                    ,ItemCollection(UUID.randomUUID(),"7 collection")
+                    ,ItemCollection(UUID.randomUUID(),"8 collection")
+                    ,ItemCollection(UUID.randomUUID(),"9 collection")
+                    ,ItemCollection(UUID.randomUUID(),"10 collection")
+                    ,ItemCollection(UUID.randomUUID(),"11 collection")
+                    ,ItemCollection(UUID.randomUUID(),"12 collection")
+                    ,ItemCollection(UUID.randomUUID(),"13 collection")
+                    ,ItemCollection(UUID.randomUUID(),"14 collection")
+                    ,ItemCollection(UUID.randomUUID(),"15 collection")
+                    ,ItemCollection(UUID.randomUUID(),"16 collection")
+                    ,ItemCollection(UUID.randomUUID(),"17 collection")
+                    ,ItemCollection(UUID.randomUUID(),"18 collection")
+                    ,ItemCollection(UUID.randomUUID(),"19 collection")
+                    ,ItemCollection(UUID.randomUUID(),"20 collection")
+                    ,ItemCollection(UUID.randomUUID(),"21 collection"))
             }
         }
 
@@ -68,7 +84,7 @@ class FragmentCollection:Fragment() {
     }
 
     inner class ItemCollectionHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-
+        var cardView: CardView = itemView.findViewById(R.id.card_view_fragment_item_collection)
         var textView:TextView = itemView.findViewById(R.id.tw_item_collection_view_holder)
 
         fun bind(itemCollection: ItemCollection){

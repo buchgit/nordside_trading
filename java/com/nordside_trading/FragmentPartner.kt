@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,7 +38,7 @@ class FragmentPartner: Fragment() {
     }
 
     inner class PartnerViewHolder(itemView:View):RecyclerView.ViewHolder(itemView){
-
+        var cardView: CardView = itemView.findViewById(R.id.card_view_fragment_partner)
         var textView:TextView = itemView.findViewById(R.id.tw_partner_view_holder)
 
         fun bind(partner: Partner){
