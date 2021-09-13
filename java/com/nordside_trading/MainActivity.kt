@@ -22,5 +22,11 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }
 
+        val currentFragmentPartner = supportFragmentManager.findFragmentById(R.id.container_fragment_3)
+        if (currentFragmentPartner == null){
+            supportFragmentManager.beginTransaction()
+                .add(R.id.container_fragment_3,FragmentPartner.newInstance())
+                .commit()
+        }
     }
 }

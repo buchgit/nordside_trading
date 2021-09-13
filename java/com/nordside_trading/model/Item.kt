@@ -12,5 +12,6 @@ class Item(
     var width: Double = 0.00,
     var UnitSquare: Double = 0.00,
     var reliefHeight: Double = 0.00,
-    var countInPackage: Int
+    var countInPackage: Int,
+    var color:String
     )
