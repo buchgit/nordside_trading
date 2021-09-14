@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import java.util.*
 
 @Entity
-class ItemCollection(
+class NomenclatureCollection(
     @PrimaryKey var id: UUID = UUID.randomUUID(),
     var title: String = ""
 )
