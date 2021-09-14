@@ -1,4 +1,4 @@
-package com.nordside_trading.json
+package com.nordside_trading.model
 
 class Nomenclature(
         var title: String = "",

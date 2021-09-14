@@ -1,11 +1,11 @@
 package com.nordside_trading.json
 
-class PriceTableList {
-    private lateinit var listOfPriceLines:List<PriceTable>
+class PriceTableArray {
+    lateinit var listOfPriceLines:List<PriceTable>
 }
 
 /*
-[ //массив (List)
+[ //массив
     {//PriceTable::class - строка с номенклатурой, единицей измерения, ценой
         "id": 100004,
         "nomenclature": { //Nomenclature::class
