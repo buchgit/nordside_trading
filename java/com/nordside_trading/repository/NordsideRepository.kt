@@ -5,9 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.nordside_trading.BuildConfig
 import com.nordside_trading.api.NordsideApi
-import com.nordside_trading.json.PriceTable
-import com.nordside_trading.json.PriceTableArray
-import com.nordside_trading.model.Nomenclature
+import com.nordside_trading.json.NomenclatureCollection
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -15,43 +13,37 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class NordsideRepository {
+
     val TAG = NordsideRepository::class.java.simpleName
     var nordsideApi: NordsideApi
 
     init {
-
         var retrofit: Retrofit = Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-
         nordsideApi = retrofit.create(NordsideApi::class.java)
     }
 
-    fun getAllNomenclature(): LiveData<List<PriceTable>>? {
-
-        val responseLiveData: MutableLiveData<List<PriceTable>> = MutableLiveData()
-
-        val siteRequest: Call<PriceTableArray> = nordsideApi.getAllItems()
-        siteRequest.enqueue(object : Callback<PriceTableArray> {
+    fun getNomenclatureList(): LiveData<List<NomenclatureCollection>> {
+        val nomenclatureCollectionList: MutableLiveData<List<NomenclatureCollection>> =
+            MutableLiveData()
+        val siteRequest: Call<List<NomenclatureCollection>> = nordsideApi.getNomenclatureList()
+        siteRequest.enqueue(object : Callback<List<NomenclatureCollection>> {
             override fun onResponse(
-                call: Call<PriceTableArray>,
-                response: Response<PriceTableArray>
+                call: Call<List<NomenclatureCollection>>,
+                response: Response<List<NomenclatureCollection>>
             ) {
-                val responseBody: PriceTableArray? = response.body()
-                val listOfPriceLines: List<PriceTable> =
-                    responseBody?.listOfPriceLines ?: mutableListOf()
-                //listOfPriceLines = listOfPriceLines.filterNot { it.imageUri..... }
-                responseLiveData.value = listOfPriceLines
-
+                val responseBody: List<NomenclatureCollection>? = response.body()
+                Log.v(TAG, "${responseBody?.size.toString()} -> onResponse")
+                nomenclatureCollectionList.value = responseBody
             }
 
-            override fun onFailure(call: Call<PriceTableArray>, t: Throwable) {
-                Log.e(TAG, t.stackTrace.toString())
+            override fun onFailure(call: Call<List<NomenclatureCollection>>, t: Throwable) {
+                Log.v(TAG, "${t.stackTrace.toString()} ->  onFailure")
             }
 
         })
-        return responseLiveData
+        return nomenclatureCollectionList
     }
-
 }

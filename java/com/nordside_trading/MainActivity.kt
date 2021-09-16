@@ -1,9 +1,16 @@
 package com.nordside_trading
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.Button
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -29,4 +36,5 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }
     }
+
 }

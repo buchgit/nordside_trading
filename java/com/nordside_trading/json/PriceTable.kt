@@ -4,11 +4,7 @@ import android.net.Uri
 import com.nordside_trading.BuildConfig
 import com.nordside_trading.model.Nomenclature
 
-class PriceTable {
-    var id: String = "";
-    var nomenclature: Nomenclature? = null
-    var unit: String = ""
-    var price: Double = 0.00
+class PriceTable (var id: String = "", var nomenclature: Nomenclature? = null, var unit: String = "", var price: Double = 0.00){
     val imageUri: Uri
         get() {
             return Uri.parse(BuildConfig.BASE_URL)

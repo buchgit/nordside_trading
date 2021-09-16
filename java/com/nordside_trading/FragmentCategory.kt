@@ -37,6 +37,8 @@ class FragmentCategory: Fragment() {
         return view
     }
 
+
+
     //сюда прилетает вьюха (через конструктор) и модель (через bind), вьюху заполняем по модели
     inner class CategoryHolder(view: View) : RecyclerView.ViewHolder(view) {
 
