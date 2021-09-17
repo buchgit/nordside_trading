@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.nordside_trading.BuildConfig
 import com.nordside_trading.api.NordsideApi
+import com.nordside_trading.json.Category
 import com.nordside_trading.json.NomenclatureCollection
 import retrofit2.Call
 import retrofit2.Callback
@@ -46,4 +47,25 @@ class NordsideRepository {
         })
         return nomenclatureCollectionList
     }
+
+    fun getAllCategory():LiveData<List<Category>>{
+        val listLiveData:MutableLiveData<List<Category>> = MutableLiveData()
+        val siteRequest:Call<List<Category>> = nordsideApi.getAllCategory()
+        siteRequest.enqueue(object :Callback<List<Category>>{
+            override fun onResponse(
+                call: Call<List<Category>>,
+                response: Response<List<Category>>
+            ) {
+                val responseBody: List<Category>? = response.body()
+                Log.v(TAG, "${responseBody?.size.toString()} -> onResponse")
+                listLiveData.value = responseBody
+            }
+
+            override fun onFailure(call: Call<List<Category>>, t: Throwable) {
+                Log.v(TAG, "${t.stackTrace.toString()} ->  onFailure")
+            }
+        })
+        return listLiveData
+    }
+
 }

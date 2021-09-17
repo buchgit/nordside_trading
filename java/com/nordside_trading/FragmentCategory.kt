@@ -2,22 +2,24 @@ package com.nordside_trading
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.nordside_trading.model.Category
+import com.nordside_trading.json.Category
+import com.nordside_trading.viewmodel.FragmentCategoryViewModel
 import java.util.*
+import androidx.lifecycle.Observer
 
 class FragmentCategory: Fragment() {
     private lateinit var recyclerView: RecyclerView
     private val EMPTY_TITLE = "empty title of category"
     private val adapter: CategoryAdapter = CategoryAdapter(emptyList())
+    private val categoryViewModel by viewModels<FragmentCategoryViewModel>()
 
     companion object{
         fun newInstance():FragmentCategory{
@@ -33,7 +35,11 @@ class FragmentCategory: Fragment() {
         val view = inflater.inflate(R.layout.fragment_category,container,false)
         recyclerView = view.findViewById(R.id.recycler_view_fragment_category) as RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
-        recyclerView.adapter = adapter
+        categoryViewModel.categoryList.observe(viewLifecycleOwner,
+        Observer {
+            recyclerView.adapter = CategoryAdapter(it)
+        })
+
         return view
     }
 
@@ -53,11 +59,15 @@ class FragmentCategory: Fragment() {
     //adapter
     inner class CategoryAdapter(var categoryList: List<Category>): RecyclerView.Adapter<CategoryHolder>() {
 
-        init {
-            if (categoryList.isEmpty()){
-                categoryList = listOf(Category(UUID.randomUUID(),"first category","any description"),Category(UUID.randomUUID(),"second category","any description"),Category(UUID.randomUUID(),"third category","any description"))
-            }
-        }
+//        init {
+//            if (categoryList.isEmpty()){
+//                categoryList = listOf(
+//                    Category("first category","any description"),
+//                    Category("second category","any description"),
+//                    Category("third category","any description")
+//                )
+//            }
+//        }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryHolder {
             val inflater = LayoutInflater.from(context)
