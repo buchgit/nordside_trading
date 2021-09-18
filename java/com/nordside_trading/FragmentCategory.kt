@@ -1,10 +1,14 @@
 package com.nordside_trading
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -20,11 +24,17 @@ class FragmentCategory: Fragment() {
     private val EMPTY_TITLE = "empty title of category"
     private val adapter: CategoryAdapter = CategoryAdapter(emptyList())
     private val categoryViewModel by viewModels<FragmentCategoryViewModel>()
+    private val TAG = FragmentCategory::class.simpleName
+    private var callbacks:Callback?=null
 
     companion object{
         fun newInstance():FragmentCategory{
             return FragmentCategory()
         }
+    }
+
+    interface Callback{
+        fun onCategorySelected(id:String)
     }
 
     override fun onCreateView(
@@ -39,35 +49,44 @@ class FragmentCategory: Fragment() {
         Observer {
             recyclerView.adapter = CategoryAdapter(it)
         })
-
         return view
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callbacks = context as Callback?
+    }
 
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
+    }
 
     //сюда прилетает вьюха (через конструктор) и модель (через bind), вьюху заполняем по модели
-    inner class CategoryHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class CategoryHolder(view: View) : RecyclerView.ViewHolder(view) , View.OnClickListener {
 
         private var cardView:CardView = itemView.findViewById(R.id.card_view_fragment_category)
         private var textView:TextView = itemView.findViewById(R.id.tw_category_view_holder)
+        private var category: Category? = null
 
-        fun bind(category: Category?){
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View?) {
+            Toast.makeText(context, "${category?.id} pressed!", Toast.LENGTH_SHORT).show()
+            callbacks?.onCategorySelected(category?.id.toString())
+        }
+
+        fun bind(param: Category?){
+            category = param
             textView.text = category?.title ?: EMPTY_TITLE
         }
+
     }
 
     //adapter
     inner class CategoryAdapter(var categoryList: List<Category>): RecyclerView.Adapter<CategoryHolder>() {
-
-//        init {
-//            if (categoryList.isEmpty()){
-//                categoryList = listOf(
-//                    Category("first category","any description"),
-//                    Category("second category","any description"),
-//                    Category("third category","any description")
-//                )
-//            }
-//        }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryHolder {
             val inflater = LayoutInflater.from(context)

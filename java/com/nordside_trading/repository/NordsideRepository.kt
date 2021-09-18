@@ -7,6 +7,7 @@ import com.nordside_trading.BuildConfig
 import com.nordside_trading.api.NordsideApi
 import com.nordside_trading.json.Category
 import com.nordside_trading.json.NomenclatureCollection
+import com.nordside_trading.model.Nomenclature
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -62,6 +63,46 @@ class NordsideRepository {
             }
 
             override fun onFailure(call: Call<List<Category>>, t: Throwable) {
+                Log.v(TAG, "${t.stackTrace.toString()} ->  onFailure")
+            }
+        })
+        return listLiveData
+    }
+
+    fun getCollectionByCategoryId(id:String):LiveData<List<NomenclatureCollection>>{
+        val listLiveData:MutableLiveData<List<NomenclatureCollection>> = MutableLiveData()
+        val siteRequest:Call<List<NomenclatureCollection>> = nordsideApi.getCollectionByCategory(id)
+        siteRequest.enqueue(object :Callback<List<NomenclatureCollection>>{
+            override fun onResponse(
+                call: Call<List<NomenclatureCollection>>,
+                response: Response<List<NomenclatureCollection>>
+            ) {
+                val responseBody: List<NomenclatureCollection>? = response.body()
+                Log.v(TAG, "${responseBody?.size.toString()} -> onResponse")
+                listLiveData.value = responseBody
+            }
+
+            override fun onFailure(call: Call<List<NomenclatureCollection>>, t: Throwable) {
+                Log.v(TAG, "${t.stackTrace.toString()} ->  onFailure")
+            }
+        })
+        return listLiveData
+    }
+
+    fun getNomenclatureByCollection(id:String):LiveData<List<Nomenclature>>{
+        val listLiveData:MutableLiveData<List<Nomenclature>> = MutableLiveData()
+        val siteRequest:Call<List<Nomenclature>> = nordsideApi.getNomenclatureByCollection(id)
+        siteRequest.enqueue(object :Callback<List<Nomenclature>>{
+            override fun onResponse(
+                call: Call<List<Nomenclature>>,
+                response: Response<List<Nomenclature>>
+            ) {
+                val responseBody: List<Nomenclature>? = response.body()
+                Log.v(TAG, "${responseBody?.size.toString()} -> onResponse")
+                listLiveData.value = responseBody
+            }
+
+            override fun onFailure(call: Call<List<Nomenclature>>, t: Throwable) {
                 Log.v(TAG, "${t.stackTrace.toString()} ->  onFailure")
             }
         })
