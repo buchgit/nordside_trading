@@ -15,25 +15,25 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nordside_trading.json.Nomenclature
 import com.nordside_trading.viewmodel.NomenclatureViewModel
 
-class FragmentNomenclature : Fragment(), FragmentCollection.Callback{
+class FragmentNomenclature : Fragment(), FragmentCollection.Callback {
 
     private val TAG = FragmentNomenclature::class.simpleName
     private lateinit var recyclerView: RecyclerView
     private lateinit var textView: TextView
     private var adapter: ItemCollectionAdapter = ItemCollectionAdapter(emptyList())
     private val collectionViewModel by viewModels<NomenclatureViewModel>()
-    private lateinit var collectionId:String
+    private lateinit var collectionId: String
 
-    companion object{
-        fun newInstance(id: String):FragmentNomenclature{
-            val args = Bundle().apply { putString("id",id) }
+    companion object {
+        fun newInstance(id: String): FragmentNomenclature {
+            val args = Bundle().apply { putString("id", id) }
             return FragmentNomenclature().apply { arguments = args }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        collectionId  = arguments?.getString("id") ?: "100008"
+        collectionId = arguments?.getString("id") ?: "100008"
     }
 
     override fun onCreateView(
@@ -41,16 +41,18 @@ class FragmentNomenclature : Fragment(), FragmentCollection.Callback{
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_nomenclature,container,false)
+        val view = inflater.inflate(R.layout.fragment_nomenclature, container, false)
         textView = view.findViewById(R.id.tw_fragment_nomenclature)
         recyclerView = view.findViewById(R.id.recycler_view_fragment_nomenclature) as RecyclerView
         //recyclerView.layoutManager = GridLayoutManager(context,2)
-        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
+        recyclerView.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
         //код ниже - для поворота экрана
-        collectionViewModel.getNomenclatureByCollection(collectionId).observe(viewLifecycleOwner, Observer{
-            recyclerView.adapter = ItemCollectionAdapter(it)
-        })
+        collectionViewModel.getNomenclatureByCollection(collectionId)
+            .observe(viewLifecycleOwner, Observer {
+                recyclerView.adapter = ItemCollectionAdapter(it)
+            })
 
         return view
     }
@@ -58,19 +60,22 @@ class FragmentNomenclature : Fragment(), FragmentCollection.Callback{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         collectionViewModel.getNomenclatureByCollection(collectionId).observe(viewLifecycleOwner,
-            Observer {nomList->
-                Log.v(TAG,nomList.size.toString())
-                Log.v(TAG, collectionViewModel.getNomenclatureByCollection(collectionId).value.toString())
+            Observer { nomList ->
+                Log.v(TAG, nomList.size.toString())
+                Log.v(
+                    TAG,
+                    collectionViewModel.getNomenclatureByCollection(collectionId).value.toString()
+                )
                 adapter = ItemCollectionAdapter(nomList)
             })
     }
 
-    inner class ItemCollectionAdapter(var collectionList:List<Nomenclature>):
+    inner class ItemCollectionAdapter(var collectionList: List<Nomenclature>) :
         RecyclerView.Adapter<ItemCollectionHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemCollectionHolder {
             val inflater = LayoutInflater.from(context)
-            val view = inflater.inflate(R.layout.nomenclature_view_holder,parent,false)
+            val view = inflater.inflate(R.layout.nomenclature_view_holder, parent, false)
             return ItemCollectionHolder(view)
         }
 
@@ -84,19 +89,19 @@ class FragmentNomenclature : Fragment(), FragmentCollection.Callback{
 
     }
 
-    inner class ItemCollectionHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+    inner class ItemCollectionHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var cardView: CardView = itemView.findViewById(R.id.card_view_fragment_nomenclature)
         var textView: TextView = itemView.findViewById(R.id.tw_nomenclature_view_holder)
 
-        fun bind(nomenclatureCollection: Nomenclature){
+        fun bind(nomenclatureCollection: Nomenclature) {
             textView.setText(nomenclatureCollection.title)
         }
     }
 
     override fun onCollectionSelected(id: String) {
         collectionViewModel.getNomenclatureByCollection(id).observe(viewLifecycleOwner,
-            Observer {nomList->
-                Log.v(TAG,nomList.size.toString())
+            Observer { nomList ->
+                Log.v(TAG, nomList.size.toString())
                 Log.v(TAG, collectionViewModel.getNomenclatureByCollection(id).value.toString())
                 adapter = ItemCollectionAdapter(nomList)
             })

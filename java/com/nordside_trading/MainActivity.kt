@@ -12,8 +12,8 @@ class MainActivity : AppCompatActivity(), FragmentCategory.Callback, FragmentCol
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val currentFragmentCategory = supportFragmentManager.findFragmentById(R.id.container_activity_main_1)
-        if (currentFragmentCategory==null) {
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.container_activity_main_1)
+        if (currentFragment==null) {
             supportFragmentManager
                 .beginTransaction()
                 .add(R.id.container_activity_main_1, FragmentCommon.newInstance(), "FRAGMENT_COMMON")
@@ -23,13 +23,13 @@ class MainActivity : AppCompatActivity(), FragmentCategory.Callback, FragmentCol
     }
     //проброска клика по категории во фрагмент
     override fun onCategorySelected(id: String) {
-        Log.v(TAG,id)
+        //Log.v(TAG,id)
         val fragment = supportFragmentManager.findFragmentByTag("FRAGMENT_COMMON") as FragmentCommon
         fragment.onCategorySelected(id)
     }
-
+    //проброска клика по коллекции во фрагмент
     override fun onCollectionSelected(id: String) {
-        Log.v(TAG, id)
+        //Log.v(TAG, id)
         val fragment = FragmentNomenclature.newInstance(id)
         supportFragmentManager
             .beginTransaction()
