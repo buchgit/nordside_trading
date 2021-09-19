@@ -1,5 +1,6 @@
 package com.nordside_trading
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -14,6 +16,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.nordside_trading.json.Category
 import com.nordside_trading.json.NomenclatureCollection
 import com.nordside_trading.repository.NordsideRepository
 import com.nordside_trading.viewmodel.FragmentCollectionViewModel
@@ -26,11 +29,16 @@ class FragmentCollection:Fragment(), FragmentCategory.Callback {
     private lateinit var textView: TextView
     private var adapter: ItemCollectionAdapter = ItemCollectionAdapter(emptyList())
     private val collectionViewModel by viewModels<FragmentCollectionViewModel>()
+    private var callbacks: Callback? = null
 
     companion object{
         fun newInstance():FragmentCollection{
             return FragmentCollection()
         }
+    }
+
+    interface Callback {
+        fun onCollectionSelected(id:String)
     }
 
     override fun onCreateView(
@@ -73,6 +81,7 @@ class FragmentCollection:Fragment(), FragmentCategory.Callback {
 
         override fun onBindViewHolder(holder: ItemCollectionHolder, position: Int) {
             return holder.bind(collectionList[position])
+
         }
 
         override fun getItemCount(): Int {
@@ -81,13 +90,24 @@ class FragmentCollection:Fragment(), FragmentCategory.Callback {
 
     }
 
-    inner class ItemCollectionHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+    inner class ItemCollectionHolder(itemView: View): RecyclerView.ViewHolder(itemView),View.OnClickListener{
         var cardView: CardView = itemView.findViewById(R.id.card_view_fragment_item_collection)
         var textView:TextView = itemView.findViewById(R.id.tw_item_collection_view_holder)
+        lateinit var nomeCollection:NomenclatureCollection
 
         fun bind(nomenclatureCollection: NomenclatureCollection){
-            textView.setText(nomenclatureCollection.title)
+            nomeCollection = nomenclatureCollection
+            textView.setText(nomeCollection.title)
         }
+
+        init{
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View?) {
+            callbacks?.onCollectionSelected(nomeCollection.id.toString())
+        }
+
     }
 
     //отработка клика по категории
@@ -97,6 +117,16 @@ class FragmentCollection:Fragment(), FragmentCategory.Callback {
         collectionViewModel.nomenclatureList?.observe(viewLifecycleOwner,Observer{
             recyclerView.adapter = ItemCollectionAdapter(it)
         })
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callbacks = context as Callback?
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
     }
 
 }

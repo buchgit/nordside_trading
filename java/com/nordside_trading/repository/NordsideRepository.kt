@@ -7,7 +7,7 @@ import com.nordside_trading.BuildConfig
 import com.nordside_trading.api.NordsideApi
 import com.nordside_trading.json.Category
 import com.nordside_trading.json.NomenclatureCollection
-import com.nordside_trading.model.Nomenclature
+import com.nordside_trading.json.Nomenclature
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

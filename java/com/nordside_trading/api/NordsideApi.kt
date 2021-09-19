@@ -5,7 +5,7 @@ package com.nordside_trading.api
 import com.nordside_trading.json.NomenclatureCollection
 import com.nordside_trading.json.PriceTable
 import com.nordside_trading.json.Category
-import com.nordside_trading.model.Nomenclature
+import com.nordside_trading.json.Nomenclature
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

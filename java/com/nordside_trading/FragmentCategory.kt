@@ -52,15 +52,7 @@ class FragmentCategory: Fragment() {
         return view
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        callbacks = context as Callback?
-    }
 
-    override fun onDetach() {
-        super.onDetach()
-        callbacks = null
-    }
 
     //сюда прилетает вьюха (через конструктор) и модель (через bind), вьюху заполняем по модели
     inner class CategoryHolder(view: View) : RecyclerView.ViewHolder(view) , View.OnClickListener {
@@ -102,6 +94,16 @@ class FragmentCategory: Fragment() {
             return categoryList.size
         }
 
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callbacks = context as Callback?
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
     }
 
 }

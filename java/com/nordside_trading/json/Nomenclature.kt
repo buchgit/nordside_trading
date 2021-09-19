@@ -1,7 +1,9 @@
-package com.nordside_trading.model
+package com.nordside_trading.json
+
+import com.google.gson.annotations.SerializedName
 
 class Nomenclature(
-        var title: String = "",
+    @SerializedName("name") var title: String = "",
     var length: Double = 0.00,
     var width: Double = 0.00,
     var UnitSquare: Double = 0.00,
