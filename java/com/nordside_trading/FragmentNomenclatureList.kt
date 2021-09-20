@@ -1,5 +1,6 @@
 package com.nordside_trading
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,27 +14,32 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nordside_trading.json.Nomenclature
-import com.nordside_trading.viewmodel.NomenclatureViewModel
+import com.nordside_trading.viewmodel.NomenclatureListViewModel
 
-class FragmentNomenclature : Fragment(), FragmentCollection.Callback {
+class FragmentNomenclatureList : Fragment(), FragmentCollection.Callback {
 
-    private val TAG = FragmentNomenclature::class.simpleName
+    private val TAG = FragmentNomenclatureList::class.simpleName
     private lateinit var recyclerView: RecyclerView
     private lateinit var textView: TextView
     private var adapter: ItemCollectionAdapter = ItemCollectionAdapter(emptyList())
-    private val collectionViewModel by viewModels<NomenclatureViewModel>()
+    private val collectionViewModel by viewModels<NomenclatureListViewModel>()
     private lateinit var collectionId: String
+    private var callbacks:CallbackNomenclature?=null
 
     companion object {
-        fun newInstance(id: String): FragmentNomenclature {
+        fun newInstance(id: String): FragmentNomenclatureList {
             val args = Bundle().apply { putString("id", id) }
-            return FragmentNomenclature().apply { arguments = args }
+            return FragmentNomenclatureList().apply { arguments = args }
         }
+    }
+
+    interface CallbackNomenclature{
+        fun onNomenclatureSelected(nomenclature: Nomenclature)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        collectionId = arguments?.getString("id") ?: "100008"
+        collectionId = arguments?.getString("id") ?: "100008" //TODO    подумать, убрать ли хардкор
     }
 
     override fun onCreateView(
@@ -41,7 +47,7 @@ class FragmentNomenclature : Fragment(), FragmentCollection.Callback {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_nomenclature, container, false)
+        val view = inflater.inflate(R.layout.fragment_nomenclature_list, container, false)
         textView = view.findViewById(R.id.tw_fragment_nomenclature)
         recyclerView = view.findViewById(R.id.recycler_view_fragment_nomenclature) as RecyclerView
         //recyclerView.layoutManager = GridLayoutManager(context,2)
@@ -61,11 +67,11 @@ class FragmentNomenclature : Fragment(), FragmentCollection.Callback {
         super.onViewCreated(view, savedInstanceState)
         collectionViewModel.getNomenclatureByCollection(collectionId).observe(viewLifecycleOwner,
             Observer { nomList ->
-                Log.v(TAG, nomList.size.toString())
-                Log.v(
-                    TAG,
-                    collectionViewModel.getNomenclatureByCollection(collectionId).value.toString()
-                )
+                //Log.v(TAG, nomList.size.toString())
+//                Log.v(
+//                    TAG,
+//                    collectionViewModel.getNomenclatureByCollection(collectionId).value.toString()
+//                )
                 adapter = ItemCollectionAdapter(nomList)
             })
     }
@@ -75,7 +81,7 @@ class FragmentNomenclature : Fragment(), FragmentCollection.Callback {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemCollectionHolder {
             val inflater = LayoutInflater.from(context)
-            val view = inflater.inflate(R.layout.nomenclature_view_holder, parent, false)
+            val view = inflater.inflate(R.layout.nomenclature_list_view_holder, parent, false)
             return ItemCollectionHolder(view)
         }
 
@@ -89,13 +95,25 @@ class FragmentNomenclature : Fragment(), FragmentCollection.Callback {
 
     }
 
-    inner class ItemCollectionHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ItemCollectionHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         var cardView: CardView = itemView.findViewById(R.id.card_view_fragment_nomenclature)
-        var textView: TextView = itemView.findViewById(R.id.tw_nomenclature_view_holder)
-
-        fun bind(nomenclatureCollection: Nomenclature) {
-            textView.setText(nomenclatureCollection.title)
+        private var textView_title: TextView = itemView.findViewById(R.id.tw_nomenclature_view_holder_1)
+        private var textView_lenght: TextView = itemView.findViewById(R.id.tw_nomenclature_view_holder_2)
+        private lateinit var currentNomenclature:Nomenclature
+        fun bind(nomenclature: Nomenclature) {
+            currentNomenclature = nomenclature
+            textView_title.setText(currentNomenclature.title)
+            textView_lenght.setText(currentNomenclature.length.toString())
         }
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View?) {
+            callbacks?.onNomenclatureSelected(currentNomenclature)
+        }
+
     }
 
     override fun onCollectionSelected(id: String) {
@@ -105,6 +123,16 @@ class FragmentNomenclature : Fragment(), FragmentCollection.Callback {
                 Log.v(TAG, collectionViewModel.getNomenclatureByCollection(id).value.toString())
                 adapter = ItemCollectionAdapter(nomList)
             })
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callbacks = context as CallbackNomenclature
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
     }
 
 }

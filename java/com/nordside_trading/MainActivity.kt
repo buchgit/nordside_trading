@@ -2,9 +2,9 @@ package com.nordside_trading
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import com.nordside_trading.json.Nomenclature
 
-class MainActivity : AppCompatActivity(), FragmentCategory.Callback, FragmentCollection.Callback  {
+class MainActivity : AppCompatActivity(), FragmentCategory.Callback, FragmentCollection.Callback, FragmentNomenclatureList.CallbackNomenclature  {
 
     private var TAG = MainActivity::class.simpleName
 
@@ -30,7 +30,16 @@ class MainActivity : AppCompatActivity(), FragmentCategory.Callback, FragmentCol
     //проброска клика по коллекции во фрагмент
     override fun onCollectionSelected(id: String) {
         //Log.v(TAG, id)
-        val fragment = FragmentNomenclature.newInstance(id)
+        val fragment = FragmentNomenclatureList.newInstance(id)
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.container_activity_main_1, fragment)
+            .addToBackStack("FRAGMENT_NOMENCLATURE_LIST")
+            .commit()
+    }
+    //проброска клика по позиции номенклатуры в списке, открывает карточку номенклатуры на всю страничку
+    override fun onNomenclatureSelected(nomenclature: Nomenclature) {
+        val fragment = FragmentNomenclatureItem.newInstance(nomenclature)
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.container_activity_main_1, fragment)
